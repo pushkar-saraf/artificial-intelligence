@@ -1,17 +1,16 @@
-
 import argparse
 
 from aimacode.search import (breadth_first_search, astar_search,
-    breadth_first_tree_search, depth_first_graph_search, uniform_cost_search,
-    greedy_best_first_graph_search, depth_limited_search,
-    recursive_best_first_search)
+                             breadth_first_tree_search, depth_first_graph_search, uniform_cost_search,
+                             greedy_best_first_graph_search, depth_limited_search,
+                             recursive_best_first_search)
 from air_cargo_problems import air_cargo_p1, air_cargo_p2, air_cargo_p3, air_cargo_p4
 
 from _utils import run_search
 
-    ##############################################################################
-    #                 YOU DO NOT NEED TO MODIFY CODE IN THIS FILE                #
-    ##############################################################################
+##############################################################################
+#                 YOU DO NOT NEED TO MODIFY CODE IN THIS FILE                #
+##############################################################################
 
 
 PROBLEM_CHOICE_MSG = """
@@ -51,12 +50,12 @@ SEARCHES = [["breadth_first_search", breadth_first_search, ""],
 def manual():
     print(PROBLEM_CHOICE_MSG)
     for idx, (name, _) in enumerate(PROBLEMS):
-        print("    {!s}. {}".format(idx+1, name))
+        print("    {!s}. {}".format(idx + 1, name))
     p_choices = input("> ").split()
 
     print(SEARCH_METHOD_CHOICE_MSG)
     for idx, (name, _, heuristic) in enumerate(SEARCHES):
-        print("    {!s}. {} {}".format(idx+1, name, heuristic))
+        print("    {!s}. {} {}".format(idx + 1, name, heuristic))
     s_choices = input("> ").split()
 
     main(p_choices, s_choices)
@@ -67,8 +66,8 @@ def manual():
 
 
 def main(p_choices, s_choices):
-    problems = [PROBLEMS[i-1] for i in map(int, p_choices)]
-    searches = [SEARCHES[i-1] for i in map(int, s_choices)]
+    problems = [PROBLEMS[i - 1] for i in map(int, p_choices)]
+    searches = [SEARCHES[i - 1] for i in map(int, s_choices)]
 
     for pname, problem_fn in problems:
         for sname, search_fn, heuristic in searches:
@@ -80,32 +79,46 @@ def main(p_choices, s_choices):
             run_search(problem_instance, search_fn, heuristic_fn)
 
 
-if __name__=="__main__":
-    parser = argparse.ArgumentParser(description="Solve air cargo planning problems " + 
-        "using a variety of state space search methods including uninformed, greedy, " +
-        "and informed heuristic search.")
+def compute():
+    for (i, problem) in enumerate(PROBLEMS):
+        for (j, search) in enumerate(SEARCHES):
+            if i > 1:
+                continue
+            print(i, j)
+            main(str(i+1), str(j+1))
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Solve air cargo planning problems " +
+                                                 "using a variety of state space search methods including uninformed, greedy, " +
+                                                 "and informed heuristic search.")
     parser.add_argument('-m', '--manual', action="store_true",
                         help="Interactively select the problems and searches to run.")
-    parser.add_argument('-p', '--problems', nargs="+", choices=range(1, len(PROBLEMS)+1), type=int, metavar='',
-                        help="Specify the indices of the problems to solve as a list of space separated values. Choose from: {!s}".format(list(range(1, len(PROBLEMS)+1))))
-    parser.add_argument('-s', '--searches', nargs="+", choices=range(1, len(SEARCHES)+1), type=int, metavar='',
-                        help="Specify the indices of the search algorithms to use as a list of space separated values. Choose from: {!s}".format(list(range(1, len(SEARCHES)+1))))
+    parser.add_argument('-p', '--problems', nargs="+", choices=range(1, len(PROBLEMS) + 1), type=int, metavar='',
+                        help="Specify the indices of the problems to solve as a list of space separated values. Choose from: {!s}".format(
+                            list(range(1, len(PROBLEMS) + 1))))
+    parser.add_argument('-s', '--searches', nargs="+", choices=range(1, len(SEARCHES) + 1), type=int, metavar='',
+                        help="Specify the indices of the search algorithms to use as a list of space separated values. Choose from: {!s}".format(
+                            list(range(1, len(SEARCHES) + 1))))
+    parser.add_argument('-c', '--compute', action="store_true", help="Run all problems")
     args = parser.parse_args()
 
     if args.manual:
         manual()
     elif args.problems and args.searches:
         main(list(sorted(set(args.problems))), list(sorted(set((args.searches)))))
+    elif args.compute:
+        compute()
     else:
         print()
         parser.print_help()
         print(INVALID_ARG_MSG)
         print("Problems\n-----------------")
         for idx, (name, _) in enumerate(PROBLEMS):
-            print("    {!s}. {}".format(idx+1, name))
+            print("    {!s}. {}".format(idx + 1, name))
         print()
         print("Search Algorithms\n-----------------")
         for idx, (name, _, heuristic) in enumerate(SEARCHES):
-            print("    {!s}. {} {}".format(idx+1, name, heuristic))
+            print("    {!s}. {} {}".format(idx + 1, name, heuristic))
         print()
         print("Use manual mode for interactive selection:\n\n\tpython run_search.py -m\n")
